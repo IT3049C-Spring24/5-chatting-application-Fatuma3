@@ -1,11 +1,18 @@
 const nameInput = document.getElementById('my-name-input');
-const messageInput = document.getElementById('message');
+const messageInput = document.getElementById('my-message');
 const sendButton = document.getElementById('send-button');
 const chatBox = document.getElementById('chat');
 const serverURL = `https://it3049c-chat.fly.dev/messages`;
 
 
 
+/**
+ * Formats a chat message with the sender's name, message text, and timestamp.
+ * 
+ * @param {object} message - The message object containing the message text and timestamp.
+ * @param {string} myNameInput - The name of the current user.
+ * @returns {string} - The formatted HTML string representing the chat message.
+ */
 function formatMessage(message, myNameInput) {
 
     const time = new Date(message.timestamp);
@@ -45,13 +52,13 @@ async function fetchMessage(){
 sendButton.addEventListener("click", function(sendButtonClickEvent) {
     sendButtonClickEvent.preventDefault();
     const sender = nameInput.value;
-    const message = myMessage.value;
+    const message = messageInput.value;
   
     sendMessages(sender,message);
-    myMessage.value = "";
+    messageInput.value = "";
   });
 
-function updateMessageInChatBox(){
+async function updateMessageInChatBox(){
     const messages = fetchMessage();
     const myNameInput = nameInput.value;
    messages.forEach(message => {
@@ -60,6 +67,7 @@ function updateMessageInChatBox(){
 }
 
 function sendMessages(username, text) {
+    const serverURL = `https://it3049c-chat.fly.dev/messages`;
     const newMessage = {
         sender: username,
         text: text,
@@ -81,7 +89,7 @@ setInterval(updateMessages, MILLISECONDS_IN_TEN_SECONDS);
 
 updateMessage();
 updateMessageInChatBox();
-
+sendMessages();
 
 
 
