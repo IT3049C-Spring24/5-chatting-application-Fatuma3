@@ -2,7 +2,7 @@ const nameInput = document.getElementById('my-name-input');
 const messageInput = document.getElementById('my-message');
 const sendButton = document.getElementById('send-button');
 const chatBox = document.getElementById('chat');
-const serverURL = `https://it3049c-chat.fly.dev/messages`;
+
 
 
 
@@ -13,6 +13,8 @@ const serverURL = `https://it3049c-chat.fly.dev/messages`;
  * @param {string} myNameInput - The name of the current user.
  * @returns {string} - The formatted HTML string representing the chat message.
  */
+
+
 function formatMessage(message, myNameInput) {
 
     const time = new Date(message.timestamp);
@@ -43,11 +45,6 @@ function formatMessage(message, myNameInput) {
     }
   }
 
-async function fetchMessage(){
-    const response = await fetch(serverURL);
-    return response.json();
-};
-    
 
 sendButton.addEventListener("click", function(sendButtonClickEvent) {
     sendButtonClickEvent.preventDefault();
@@ -58,16 +55,28 @@ sendButton.addEventListener("click", function(sendButtonClickEvent) {
     messageInput.value = "";
   });
 
-async function updateMessageInChatBox(){
-    const messages = fetchMessage();
-    const myNameInput = nameInput.value;
-   messages.forEach(message => {
-    chatBox.innerHTML += formatMessage(message, myNameInput);
-   });
+
+
+const serverURL = `https://it3049c-chat.fly.dev/messages`;
+
+async function fetchMessages() {
+    const response = await fetch(serverURL);
+    return response.json();
 }
 
-function sendMessages(username, text) {
+async function updateMessages() {
+  const messages = await fetchMessages();
+  let formattedMessages = "";
+  messages.forEach(message => {
+      formattedMessages += formatMessage(message, nameInput.value);
+     });
+  chatBox.innerHTML = formattedMessages;
+}
+updateMessages();
+
+async function sendMessages(username, text) {
     const serverURL = `https://it3049c-chat.fly.dev/messages`;
+
     const newMessage = {
         sender: username,
         text: text,
@@ -83,12 +92,11 @@ function sendMessages(username, text) {
     });
 }
 
+
 const MILLISECONDS_IN_TEN_SECONDS = 10000;
 setInterval(updateMessages, MILLISECONDS_IN_TEN_SECONDS);
 
-
-updateMessage();
-updateMessageInChatBox();
+fetchMessages();
 sendMessages();
 
 
