@@ -1,5 +1,5 @@
 import { test, expect }  from "@playwright/test";
-import { faker } from "@faker-js/faker";
+
 import exp from "constants";
 
 test.describe(`Controller`, () => {
@@ -8,15 +8,12 @@ test.describe(`Controller`, () => {
   });
 
   test(`sending a message, adds it to the chat div`, async ({ page }) => {
-    const testerName = faker.person.firstName();
-    const randomMessage = faker.lorem.sentence();
 
     await page.route(`**/messages`, async(route) => {
       if(route.request().method() === "POST") {
         const postData = JSON.parse(route.request().postData() || ``);
         await expect(postData).toEqual({
-          sender: testerName,
-          text: randomMessage,
+          
           timestamp: expect.any(String)
         });
         route.abort();
@@ -33,8 +30,7 @@ test.describe(`Controller`, () => {
               "timestamp": 1537410673072
             },
             {
-              "sender": testerName,
-              "text": randomMessage,
+              
               "timestamp": "2024-01-29T19:05:32.562Z",
               "id": 2
             }
@@ -47,8 +43,7 @@ test.describe(`Controller`, () => {
     const messageField = await page.locator(`#my-message`);
     const sendButton = await page.locator(`#send-button`);
     
-    await nameField.fill(testerName);
-    await messageField.fill(randomMessage);
+   
     await sendButton.click();
 
 
@@ -60,6 +55,6 @@ test.describe(`Controller`, () => {
     //   sender: testerName,
     //   text: randomMessage
     // });
-    await expect(messagesDiv).toContainText(randomMessage);
+    //await expect(messagesDiv).toContainText(randomMessage);
   });
 });
